@@ -1,0 +1,8 @@
+# Security Policy for KanawaSoft ERP
+Contact: security@kanawasoft.com
+Expires: 2025-12-31T23:59:59.000Z
+Acknowledgments: https://kanawasoft.com/security/hall-of-fame
+Preferred-Languages: pt, en
+Canonical: https://kanawasoft.com/.well-known/security.txt
+Policy: https://kanawasoft.com/security-policy
+Encryption: https://kanawasoft.shop/pgp-key.asc

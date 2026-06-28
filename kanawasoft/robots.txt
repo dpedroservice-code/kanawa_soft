@@ -1,0 +1,41 @@
+# Robots.txt para KanawaSoft ERP
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /database/
+Disallow: /backup/
+
+# Sitemap
+Sitemap: https://kanawasoft.com/sitemap.xml
+
+# Crawl delay
+Crawl-delay: 10
+
+# Allow bots to index
+User-agent: Googlebot
+Allow: /
+Allow: /css/
+Allow: /js/
+Allow: /icons/
+
+User-agent: Bingbot
+Allow: /
+Allow: /css/
+Allow: /js/
+Allow: /icons/
+
+User-agent: *
+
+# Block email harvesters
+User-agent: EmailCollector
+Disallow: /
+
+User-agent: EmailSiphon
+Disallow: /
+
+User-agent: EmailWolf
+Disallow: /
+
+User-agent: Extract
+Disallow: /

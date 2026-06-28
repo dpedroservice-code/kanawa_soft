@@ -1,0 +1,61 @@
+{
+  "name": "kanawasoft-erp",
+  "version": "3.0.0",
+  "description": "KanawaSoft ERP - Sistema Completo com PostgreSQL e PWA",
+  "main": "index.html",
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "echo 'Build completed successfully'",
+    "deploy": "netlify deploy --prod",
+    "deploy:dev": "netlify deploy --build",
+    "start": "netlify dev",
+    "test": "echo 'No tests specified'",
+    "lint": "echo 'No linter configured'",
+    "format": "prettier --write '**/*.{js,json,html,css}'",
+    "prepare": "husky install"
+  },
+  "dependencies": {
+    "pg": "^8.11.3",
+    "pg-hstore": "^2.3.4",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "dotenv": "^16.3.1",
+    "helmet": "^7.0.0",
+    "morgan": "^1.10.0",
+    "compression": "^1.7.4"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.0.0",
+    "prettier": "^3.0.3",
+    "husky": "^8.0.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "keywords": [
+    "erp",
+    "pwa",
+    "business",
+    "management",
+    "inventory",
+    "sales",
+    "finance",
+    "crm",
+    "hr",
+    "logistics",
+    "marketing"
+  ],
+  "author": "KanawaSoft",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kanawasoft/erp"
+  },
+  "bugs": {
+    "url": "https://github.com/kanawasoft/erp/issues"
+  },
+  "homepage": "https://kanawasoft.shop"
+}

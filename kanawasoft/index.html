@@ -1,0 +1,3557 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>KanawaSoft ERP - Sistema Completo</title>
+
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+    <meta name="theme-color" content="#0b2b4a" />
+    <meta name="description" content="KanawaSoft ERP - Sistema de Gestão Empresarial Completo" />
+
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300..800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    
+    <!-- CSS -->
+    
+    
+    <style>
+        /* ============================================================
+           ESTILOS ADICIONAIS - TODOS OS MÓDULOS
+           ============================================================ */
+        
+        /* Reset e Base */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #0b2b4a;
+            --primary-light: #1a3a5c;
+            --primary-dark: #061a2e;
+            --secondary: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --purple: #8b5cf6;
+            --pink: #ec4899;
+            --bg: #f1f5f9;
+            --bg-card: #ffffff;
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 24px rgba(0,0,0,0.06);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .dark-theme {
+            --bg: #0f172a;
+            --bg-card: #1e293b;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --shadow: 0 4px 24px rgba(0,0,0,0.3);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            transition: background var(--transition), color var(--transition);
+            overflow-x: hidden;
+        }
+
+        /* ============================================================
+           SIDENAV
+           ============================================================ */
+        .sidenav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            height: 100vh;
+            background: var(--primary);
+            color: #fff;
+            z-index: 1000;
+            overflow-y: auto;
+            transform: translateX(-100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 16px 0;
+        }
+
+        .sidenav.open { transform: translateX(0); }
+
+        .sidenav::-webkit-scrollbar { width: 4px; }
+        .sidenav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 4px; }
+
+        .sidenav-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .user-info h5 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .user-info p {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            margin-bottom: 2px;
+        }
+
+        .user-status {
+            font-size: 0.6rem;
+            opacity: 0.8;
+        }
+
+        .nav-section-title {
+            padding: 16px 20px 8px;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.5;
+            font-weight: 600;
+        }
+
+        .nav-divider {
+            height: 1px;
+            background: rgba(255,255,255,0.08);
+            margin: 4px 16px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            gap: 12px;
+            border-left: 3px solid transparent;
+            font-size: 0.85rem;
+            position: relative;
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+        }
+
+        .nav-item.active {
+            background: rgba(255,255,255,0.12);
+            color: #fff;
+            border-left-color: var(--success);
+        }
+
+        .nav-item .nav-icon {
+            width: 20px;
+            text-align: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .nav-item .nav-badge {
+            margin-left: auto;
+            background: var(--danger);
+            color: #fff;
+            font-size: 0.6rem;
+            padding: 1px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .nav-item.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .sidenav-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .sidenav-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* ============================================================
+           AUTH
+           ============================================================ */
+        .auth-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        }
+
+        .auth-card {
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: var(--radius);
+            width: 100%;
+            max-width: 420px;
+            box-shadow: var(--shadow);
+        }
+
+        .auth-card .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-card .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .auth-card .logo h1 span {
+            color: var(--success);
+        }
+
+        .auth-card .logo p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+
+        .auth-card .form-group {
+            margin-bottom: 16px;
+        }
+
+        .auth-card .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 4px;
+            color: var(--text);
+        }
+
+        .auth-card .form-group input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: var(--bg);
+            color: var(--text);
+            font-size: 0.95rem;
+            transition: border var(--transition);
+        }
+
+        .auth-card .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .auth-card .btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .auth-card .btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .auth-card .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .auth-card .btn-primary:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .auth-footer a {
+            color: var(--primary);
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            display: none;
+            margin-bottom: 16px;
+        }
+
+        .error-message.show { display: block; }
+
+        .success-message {
+            background: #d1fae5;
+            color: #059669;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            display: none;
+            margin-bottom: 16px;
+        }
+
+        .success-message.show { display: block; }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ============================================================
+           APP CONTAINER
+           ============================================================ */
+        .app-hidden { display: none !important; }
+
+        #appContainer {
+            padding-left: 0;
+            transition: padding-left 0.3s;
+        }
+
+        @media (min-width: 768px) {
+            #appContainer {
+                padding-left: 280px;
+            }
+            .sidenav {
+                transform: translateX(0) !important;
+            }
+            .sidenav-overlay {
+                display: none !important;
+            }
+            .menu-btn {
+                display: none !important;
+            }
+        }
+
+        /* ============================================================
+           HEADER
+           ============================================================ */
+        .app-header {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            padding: 0 20px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: var(--text);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: var(--radius-sm);
+            transition: background 0.2s;
+        }
+
+        .menu-btn:hover {
+            background: var(--bg);
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+
+        .logo-text span {
+            color: var(--success);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-actions button {
+            background: none;
+            border: none;
+            padding: 8px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: all 0.2s;
+            font-size: 1rem;
+            position: relative;
+        }
+
+        .header-actions button:hover {
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .sync-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: var(--bg);
+        }
+
+        .sync-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .sync-dot.online { background: var(--success); }
+        .sync-dot.offline { background: var(--danger); }
+
+        .status-badge {
+            font-size: 0.65rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: var(--bg);
+            color: var(--text-muted);
+        }
+
+        .notif-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: var(--danger);
+            color: #fff;
+            font-size: 0.55rem;
+            font-weight: 600;
+            padding: 1px 6px;
+            border-radius: 10px;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        /* ============================================================
+           NOTIFICATIONS PANEL
+           ============================================================ */
+        .notif-panel {
+            position: fixed;
+            top: 64px;
+            right: 0;
+            width: 380px;
+            max-height: calc(100vh - 64px);
+            background: var(--bg-card);
+            border-left: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            transform: translateX(100%);
+            transition: transform 0.3s;
+            z-index: 200;
+            overflow-y: auto;
+        }
+
+        .notif-panel.open {
+            transform: translateX(0);
+        }
+
+        .notif-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: var(--bg-card);
+            z-index: 1;
+        }
+
+        .notif-header h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .notif-list {
+            padding: 8px 0;
+        }
+
+        .notif-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .notif-item:hover {
+            background: var(--bg);
+        }
+
+        .notif-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 0.8rem;
+        }
+
+        .notif-icon.success { background: #d1fae5; color: #059669; }
+        .notif-icon.warning { background: #fef3c7; color: #d97706; }
+        .notif-icon.error { background: #fee2e2; color: #dc2626; }
+        .notif-icon.info { background: #dbeafe; color: #2563eb; }
+
+        .notif-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .notif-title {
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .notif-body {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .notif-time {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .notif-empty {
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* ============================================================
+           MAIN CONTENT
+           ============================================================ */
+        .main-content {
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .page-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ============================================================
+           WELCOME CARD
+           ============================================================ */
+        .welcome-card {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            padding: 24px 32px;
+            border-radius: var(--radius);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .welcome-card h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .welcome-card p {
+            opacity: 0.8;
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+
+        .welcome-card .btn-outline-light {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .welcome-card .btn-outline-light:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        /* ============================================================
+           STATS GRID
+           ============================================================ */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .stat-title {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: #fff;
+        }
+
+        .stat-icon.blue { background: var(--info); }
+        .stat-icon.green { background: var(--success); }
+        .stat-icon.purple { background: var(--purple); }
+        .stat-icon.yellow { background: var(--warning); }
+        .stat-icon.red { background: var(--danger); }
+
+        .stat-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .stat-change {
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .stat-change.positive { color: var(--success); }
+        .stat-change.negative { color: var(--danger); }
+
+        /* ============================================================
+           DASHBOARD GRID
+           ============================================================ */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chart-container {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+
+        .chart-container h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+
+        .table-container {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .table-container table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .table-container th {
+            background: var(--bg);
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .table-container td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .table-container tr:hover td {
+            background: var(--bg);
+        }
+
+        /* ============================================================
+           PAGE HEADER
+           ============================================================ */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .page-header h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        /* ============================================================
+           PRODUCTS GRID
+           ============================================================ */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .product-card {
+            background: var(--bg-card);
+            padding: 16px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+        }
+
+        .product-icon {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+        }
+
+        .product-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 4px;
+        }
+
+        .product-code {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .product-price {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.1rem;
+            margin: 8px 0;
+        }
+
+        .product-stock {
+            font-size: 0.75rem;
+            padding: 2px 10px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+
+        .product-stock.normal {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .product-stock.low {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        /* ============================================================
+           CLIENTS GRID
+           ============================================================ */
+        .clients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .client-card {
+            background: var(--bg-card);
+            padding: 16px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .client-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .client-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin: 0 auto 10px;
+        }
+
+        .client-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .client-info {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .client-actions {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        /* ============================================================
+           PDV
+           ============================================================ */
+        .pdv-grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 20px;
+            height: calc(100vh - 200px);
+        }
+
+        @media (max-width: 900px) {
+            .pdv-grid {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+
+        .pdv-search {
+            margin-bottom: 16px;
+        }
+
+        .pdv-search input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: var(--bg);
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        .pdv-search input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .pdv-products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+            overflow-y: auto;
+            max-height: calc(100% - 60px);
+            padding: 4px;
+        }
+
+        .pdv-product {
+            background: var(--bg-card);
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            border: 2px solid var(--border);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .pdv-product:hover {
+            border-color: var(--primary);
+            transform: scale(1.03);
+        }
+
+        .pdv-product.in-cart {
+            border-color: var(--success);
+            background: #d1fae5;
+        }
+
+        .pdv-product .pdv-price {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+
+        .pdv-product .pdv-stock {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+        }
+
+        .pdv-product .pdv-qty {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--success);
+            color: #fff;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+
+        .cart-container {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            max-height: 600px;
+        }
+
+        .cart-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 16px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .cart-item .item-name {
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .cart-item .item-detail {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .cart-item .item-actions {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .cart-item .btn-qty {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .cart-item .btn-qty:hover {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .cart-item .btn-remove {
+            background: none;
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 4px;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-cart .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 12px;
+        }
+
+        .cart-total {
+            padding: 16px 20px;
+            border-top: 2px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .cart-total .total-value {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .cart-actions {
+            padding: 12px 20px;
+            display: flex;
+            gap: 8px;
+            border-top: 1px solid var(--border);
+        }
+
+        .cart-actions .btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .cart-actions .btn-danger {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .cart-actions .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .cart-actions .btn-success {
+            background: var(--success);
+            color: #fff;
+        }
+
+        .cart-actions .btn-success:hover {
+            background: #059669;
+        }
+
+        /* ============================================================
+           MODALS
+           ============================================================ */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            width: 100%;
+            max-width: 560px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.2);
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.95) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: var(--bg-card);
+            z-index: 1;
+            border-radius: var(--radius) var(--radius) 0 0;
+        }
+
+        .modal-header h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            position: sticky;
+            bottom: 0;
+            background: var(--bg-card);
+            border-radius: 0 0 var(--radius) var(--radius);
+        }
+
+        .modal-footer .btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-footer .btn-secondary {
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .modal-footer .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .modal-footer .btn-success {
+            background: var(--success);
+            color: #fff;
+        }
+
+        .modal-footer .btn-success:hover {
+            background: #059669;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 4px;
+            color: var(--text);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: var(--bg);
+            color: var(--text);
+            font-size: 0.95rem;
+            transition: border var(--transition);
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ============================================================
+           PAYMENT MODAL
+           ============================================================ */
+        .payment-total {
+            font-size: 1.4rem;
+            font-weight: 700;
+            text-align: center;
+            padding: 16px;
+            background: var(--bg);
+            border-radius: var(--radius-sm);
+            margin-bottom: 16px;
+        }
+
+        .payment-change {
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-align: center;
+            padding: 12px;
+            background: #d1fae5;
+            border-radius: var(--radius-sm);
+            margin-bottom: 16px;
+            color: #059669;
+        }
+
+        /* ============================================================
+           CATEGORIES GRID
+           ============================================================ */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px;
+        }
+
+        .category-card {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .category-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* ============================================================
+           USERS GRID
+           ============================================================ */
+        .users-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .user-card {
+            background: var(--bg-card);
+            padding: 16px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .user-role {
+            font-size: 0.65rem;
+            padding: 2px 12px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-top: 4px;
+        }
+
+        .user-role.admin {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .user-role.gerente {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .user-role.vendedor {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .user-role.estoquista {
+            background: #fce4ec;
+            color: #dc2626;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        /* ============================================================
+           RELATÓRIOS
+           ============================================================ */
+        .relatorios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .relatorios-grid .card {
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            padding: 24px 16px;
+        }
+
+        .relatorios-grid .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+        }
+
+        .relatorios-grid .card h4 {
+            margin-top: 12px;
+            font-size: 0.95rem;
+        }
+
+        .relatorios-grid .card p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* ============================================================
+           FINANCEIRO STATS
+           ============================================================ */
+        .financeiro-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        /* ============================================================
+           DB ACTIONS
+           ============================================================ */
+        .db-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .db-stat-item {
+            background: var(--bg);
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            text-align: center;
+        }
+
+        .db-stat-item .stat-number {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .db-stat-item .stat-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+        }
+
+        .db-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .db-actions .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .db-actions .btn-primary {
+            background: var(--info);
+            color: #fff;
+        }
+
+        .db-actions .btn-warning {
+            background: var(--warning);
+            color: #fff;
+        }
+
+        .db-actions .btn-danger {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .db-actions .btn-success {
+            background: var(--success);
+            color: #fff;
+        }
+
+        .db-actions .btn-secondary {
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        /* ============================================================
+           TOAST
+           ============================================================ */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-width: 380px;
+            width: 100%;
+        }
+
+        .toast {
+            background: var(--bg-card);
+            padding: 14px 20px;
+            border-radius: var(--radius-sm);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            border-left: 4px solid var(--info);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: toastIn 0.4s ease;
+            font-size: 0.9rem;
+        }
+
+        .toast.success { border-left-color: var(--success); }
+        .toast.error { border-left-color: var(--danger); }
+        .toast.warning { border-left-color: var(--warning); }
+        .toast.info { border-left-color: var(--info); }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateX(40px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .toast .toast-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1rem;
+            margin-left: auto;
+            padding: 4px;
+        }
+
+        /* ============================================================
+           FOOTER
+           ============================================================ */
+        .app-footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            border-top: 1px solid var(--border);
+            margin-top: 20px;
+        }
+
+        /* ============================================================
+           BUTTONS
+           ============================================================ */
+        .btn-sm {
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-sm.btn-primary {
+            background: var(--info);
+            color: #fff;
+        }
+
+        .btn-sm.btn-primary:hover {
+            background: #2563eb;
+        }
+
+        .btn-sm.btn-danger {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .btn-sm.btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-sm.btn-success {
+            background: var(--success);
+            color: #fff;
+        }
+
+        .btn-sm.btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-sm.btn-secondary {
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .btn-sm.btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .btn-sm.btn-info {
+            background: var(--info);
+            color: #fff;
+        }
+
+        .btn-sm.btn-info:hover {
+            background: #2563eb;
+        }
+
+        /* ============================================================
+           BADGE
+           ============================================================ */
+        .badge {
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .badge-danger {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .badge-info {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        /* ============================================================
+           PROGRESS BAR
+           ============================================================ */
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--bg);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 4px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--success);
+            border-radius: 4px;
+            transition: width 0.6s ease;
+        }
+
+        /* ============================================================
+           LOADING
+           ============================================================ */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+
+        .loading .spinner {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            margin-bottom: 12px;
+        }
+
+        /* ============================================================
+           SCROLLBAR
+           ============================================================ */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 768px) {
+            .header-actions .status-badge {
+                display: none;
+            }
+            .header-actions .sync-status {
+                font-size: 0.65rem;
+                padding: 2px 8px;
+            }
+            .stat-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .main-content {
+                padding: 12px;
+            }
+            .welcome-card {
+                padding: 16px 20px;
+            }
+            .welcome-card h2 {
+                font-size: 1.1rem;
+            }
+            .modal {
+                max-width: 100%;
+                margin: 10px;
+                max-height: 95vh;
+            }
+            .notif-panel {
+                width: 100%;
+                max-height: calc(100vh - 64px);
+            }
+            .pdv-products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stat-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            .stat-card {
+                padding: 14px;
+            }
+            .stat-value {
+                font-size: 1.2rem;
+            }
+            .header-actions .sync-status {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+    SIDENAV
+    ============================================================ -->
+    <nav id="sidenav" class="sidenav">
+        <div class="sidenav-header">
+            <div class="user-avatar" id="sideAvatar">A</div>
+            <div class="user-info">
+                <h5 id="sideUserName">Administrador</h5>
+                <p id="sideUserEmail">admin@kanawasoft.com</p>
+                <span class="user-status" id="sideUserStatus">🟢 Online</span>
+            </div>
+        </div>
+
+        <!-- Principal -->
+        <div class="nav-section-title">📊 Principal</div>
+        <a class="nav-item active" data-page="dashboard" onclick="navigateTo('dashboard')">
+            <span class="nav-icon"><i class="fas fa-chart-pie"></i></span>
+            <span class="nav-label">Dashboard</span>
+        </a>
+        <a class="nav-item" data-page="pdv" onclick="navigateTo('pdv')">
+            <span class="nav-icon"><i class="fas fa-shopping-cart"></i></span>
+            <span class="nav-label">PDV - Vendas</span>
+        </a>
+
+        <!-- Vendas -->
+        <div class="nav-divider"></div>
+        <div class="nav-section-title">📦 Vendas</div>
+        <a class="nav-item" data-page="vendas" onclick="navigateTo('vendas')">
+            <span class="nav-icon"><i class="fas fa-file-invoice"></i></span>
+            <span class="nav-label">Pedidos de Venda</span>
+            <span class="nav-badge" id="salesBadge">0</span>
+        </a>
+        <a class="nav-item" data-page="orcamentos" onclick="navigateTo('orcamentos')">
+            <span class="nav-icon"><i class="fas fa-file-invoice-dollar"></i></span>
+            <span class="nav-label">Orçamentos</span>
+        </a>
+        <a class="nav-item" data-page="notas-fiscais" onclick="navigateTo('notas-fiscais')">
+            <span class="nav-icon"><i class="fas fa-receipt"></i></span>
+            <span class="nav-label">Notas Fiscais</span>
+        </a>
+        <a class="nav-item" data-page="devolucoes" onclick="navigateTo('devolucoes')">
+            <span class="nav-icon"><i class="fas fa-undo"></i></span>
+            <span class="nav-label">Devoluções</span>
+        </a>
+        <a class="nav-item" data-page="clientes" onclick="navigateTo('clientes')">
+            <span class="nav-icon"><i class="fas fa-users"></i></span>
+            <span class="nav-label">Clientes</span>
+            <span class="nav-badge" id="clientBadge">0</span>
+        </a>
+
+        <!-- Compras -->
+        <div class="nav-divider"></div>
+        <div class="nav-section-title">🛒 Compras</div>
+        <a class="nav-item" data-page="fornecedores" onclick="navigateTo('fornecedores')">
+            <span class="nav-icon"><i class="fas fa-truck"></i></span>
+            <span class="nav-label">Fornecedores</span>
+        </a>
+        <a class="nav-item" data-page="compras" onclick="navigateTo('compras')">
+            <span class="nav-icon"><i class="fas fa-shopping-bag"></i></span>
+            <span class="nav-label">Pedidos de Compra</span>
+        </a>
+
+        <!-- Estoque -->
+        <div class="nav-divider"></div>
+        <div class="nav-section-title">📦 Estoque</div>
+        <a class="nav-item" data-page="produtos" onclick="navigateTo('produtos')">
+            <span class="nav-icon"><i class="fas fa-boxes"></i></span>
+            <span class="nav-label">Produtos</span>
+            <span class="nav-badge" id="productBadge">0</span>
+        </a>
+        <a class="nav-item" data-page="movimentacoes" onclick="navigateTo('movimentacoes')">
+            <span class="nav-icon"><i class="fas fa-arrows-alt-h"></i></span>
+            <span class="nav-label">Movimentações</span>
+        </a>
+        <a class="nav-item" data-page="transferencias" onclick="navigateTo('transferencias')">
+            <span class="nav-icon"><i class="fas fa-exchange-alt"></i></span>
+            <span class="nav-label">Transferências</span>
+        </a>
+        <a class="nav-item" data-page="categorias" onclick="navigateTo('categorias')">
+            <span class="nav-icon"><i class="fas fa-tags"></i></span>
+            <span class="nav-label">Categorias</span>
+        </a>
+
+        <!-- Financeiro -->
+        <div class="nav-divider"></div>
+        <div class="nav-section-title">💰 Financeiro</div>
+        <a class="nav-item" data-page="financeiro" onclick="navigateTo('financeiro')">
+            <span class="nav-icon"><i class="fas fa-coins"></i></span>
+            <span class="nav-label">Contas a Pagar/Receber</span>
+        </a>
+        <a class="nav-item" data-page="caixa" onclick="navigateTo('caixa')">
+            <span class="nav-icon"><i class="fas fa-cash-register"></i></span>
+            <span class="nav-label">Caixa / Bancos</span>
+        </a>
+        <a class="nav-item" data-page="fluxo-caixa" onclick="navigateTo('fluxo-caixa')">
+            <span class="nav-icon"><i class="fas fa-chart-line"></i></span>
+            <span class="nav-label">Fluxo de Caixa</span>
+        </a>
+
+        <!-- RH -->
+        <div class="nav-divider"></div>
+        <div class="nav-section-title">👤 Recursos Humanos</div>
+        <a class="nav-item" data-page="rh" onclick="navigateTo('rh')">
+            <span class="nav-icon"><i class="fas fa-users-cog"></i></span>
+            <span class="nav-label">Funcionários</span>
+        </a>
+        <a class="nav-item" data-page="ponto" onclick="navigateTo('ponto')">
+            <span class="nav-icon"><i class="fas fa-clock"></i></span>
+            <span class="nav-label">Ponto Eletrônico</span>
+        </a>
+
+        <!-- Projetos -->
+        <div class="nav-divider"></div>
+        <div class="nav-section-title">📊 Projetos</div>
+        <a class="nav-item" data-page="projetos" onclick="navigateTo('projetos')">
+            <span class="nav-icon"><i class="fas fa-tasks"></i></span>
+            <span class="nav-label">Projetos</span>
+        </a>
+
+        <!-- CRM -->
+        <div class="nav-divider"></div>
+        <div class="nav-section-title">🎯 CRM</div>
+        <a class="nav-item" data-page="crm" onclick="navigateTo('crm')">
+            <span class="nav-icon"><i class="fas fa-headset"></i></span>
+            <span class="nav-label">Atendimentos</span>
+        </a>
+
+        <!-- Logística -->
+        <div class="nav-divider"></div>
+        <div class="nav-section-title">🚚 Logística</div>
+        <a class="nav-item" data-page="logistica" onclick="navigateTo('logistica')">
+            <span class="nav-icon"><i class="fas fa-shipping-fast"></i></span>
+            <span class="nav-label">Transportadoras</span>
+        </a>
+        <a class="nav-item" data-page="entregas" onclick="navigateTo('entregas')">
+            <span class="nav-icon"><i class="fas fa-map-marked-alt"></i></span>
+            <span class="nav-label">Entregas</span>
+        </a>
+
+        <!-- Marketing -->
+        <div class="nav-divider"></div>
+        <div class="nav-section-title">📢 Marketing</div>
+        <a class="nav-item" data-page="marketing" onclick="navigateTo('marketing')">
+            <span class="nav-icon"><i class="fas fa-bullhorn"></i></span>
+            <span class="nav-label">Campanhas</span>
+        </a>
+
+        <!-- Multiloja -->
+        <div class="nav-divider"></div>
+        <div class="nav-section-title">🏪 Multiloja</div>
+        <a class="nav-item" data-page="multiloja" onclick="navigateTo('multiloja')">
+            <span class="nav-icon"><i class="fas fa-store"></i></span>
+            <span class="nav-label">Filiais</span>
+        </a>
+
+        <!-- Relatórios -->
+        <div class="nav-divider"></div>
+        <div class="nav-section-title">📊 Relatórios</div>
+        <a class="nav-item" data-page="relatorios" onclick="navigateTo('relatorios')">
+            <span class="nav-icon"><i class="fas fa-chart-bar"></i></span>
+            <span class="nav-label">Relatórios</span>
+        </a>
+
+        <!-- Configurações -->
+        <div class="nav-divider"></div>
+        <div class="nav-section-title">⚙️ Configurações</div>
+        <a class="nav-item admin-only" data-page="config-empresa" onclick="navigateTo('config-empresa')">
+            <span class="nav-icon"><i class="fas fa-building"></i></span>
+            <span class="nav-label">Empresa</span>
+        </a>
+        <a class="nav-item admin-only" data-page="perfis-usuarios" onclick="navigateTo('perfis-usuarios')">
+            <span class="nav-icon"><i class="fas fa-user-shield"></i></span>
+            <span class="nav-label">Usuários</span>
+        </a>
+        <a class="nav-item admin-only" data-page="database" onclick="navigateTo('database')">
+            <span class="nav-icon"><i class="fas fa-database"></i></span>
+            <span class="nav-label">Banco de Dados</span>
+        </a>
+
+        <!-- Sair -->
+        <div class="nav-divider"></div>
+        <a class="nav-item" onclick="logout()" style="color:var(--danger);">
+            <span class="nav-icon"><i class="fas fa-sign-out-alt"></i></span>
+            <span class="nav-label">Sair</span>
+        </a>
+    </nav>
+
+    <div id="sidenavOverlay" class="sidenav-overlay" onclick="toggleSidenav()"></div>
+
+    <!-- ============================================================
+    AUTH
+    ============================================================ -->
+    <div id="authContainer" class="auth-container">
+        <div class="auth-card">
+            <div class="logo">
+                <h1>Kanawa<span>Soft</span></h1>
+                <p>Um Software. Mil Soluções.</p>
+            </div>
+            <div id="authError" class="error-message"></div>
+            <div id="authSuccess" class="success-message"></div>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>📧 Email</label>
+                    <input type="email" id="loginEmail" placeholder="seu@email.com" required />
+                </div>
+                <div class="form-group">
+                    <label>🔒 Senha</label>
+                    <input type="password" id="loginPassword" placeholder="Sua senha" required minlength="6" />
+                </div>
+                <button type="submit" class="btn btn-primary" id="loginBtn">Entrar</button>
+            </form>
+            <div class="auth-footer">
+                Não tem conta? <a onclick="showRegister()">Criar conta</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register -->
+    <div id="registerContainer" class="auth-container" style="display:none;">
+        <div class="auth-card">
+            <div class="logo">
+                <h1>Kanawa<span>Soft</span></h1>
+                <p>Criar nova conta</p>
+            </div>
+            <div id="registerError" class="error-message"></div>
+            <div id="registerSuccess" class="success-message"></div>
+            <form id="registerForm" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label>👤 Nome Completo</label>
+                    <input type="text" id="registerName" placeholder="Seu nome completo" required />
+                </div>
+                <div class="form-group">
+                    <label>📧 Email</label>
+                    <input type="email" id="registerEmail" placeholder="seu@email.com" required />
+                </div>
+                <div class="form-group">
+                    <label>📱 Telefone</label>
+                    <input type="tel" id="registerPhone" placeholder="+244 900 000 000" />
+                </div>
+                <div class="form-group">
+                    <label>🔒 Senha</label>
+                    <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres" required minlength="6" />
+                </div>
+                <div class="form-group">
+                    <label>🔒 Confirmar Senha</label>
+                    <input type="password" id="registerPasswordConfirm" placeholder="Confirme sua senha" required minlength="6" />
+                </div>
+                <button type="submit" class="btn btn-primary" id="registerBtn">Criar Conta</button>
+            </form>
+            <div class="auth-footer">
+                Já tem conta? <a onclick="showLogin()">Fazer login</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    APP CONTAINER
+    ============================================================ -->
+    <div id="appContainer" class="app-hidden">
+
+        <header class="app-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <button class="menu-btn" onclick="toggleSidenav()" aria-label="Abrir menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <span class="logo-text">Kanawa<span>Soft</span></span>
+                </div>
+                <div class="header-actions">
+                    <span class="sync-status" id="syncStatus">
+                        <span class="sync-dot online" id="syncDot"></span>
+                        <span id="syncLabel">Online</span>
+                    </span>
+                    <button class="sync-btn" onclick="syncNow()" id="syncBtn" title="Sincronizar">
+                        <i class="fas fa-sync"></i>
+                    </button>
+                    <span class="status-badge" id="dbStatus">💾 Local</span>
+                    <span class="status-badge" id="companyBadge">🏢 Empresa</span>
+                    <button class="notif-btn" onclick="toggleNotificacoes()" title="Notificações">
+                        <i class="fas fa-bell"></i>
+                        <span class="notif-badge" id="notifBadge">0</span>
+                    </button>
+                    <button class="theme-btn" onclick="toggleTheme()" title="Alternar tema">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Notifications Panel -->
+        <div class="notif-panel" id="notifPanel">
+            <div class="notif-header">
+                <h4>🔔 Notificações</h4>
+                <button onclick="clearNotifications()" class="btn-sm btn-secondary">Limpar</button>
+            </div>
+            <div class="notif-list" id="notifList">
+                <div class="notif-empty">Nenhuma notificação</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+
+            <!-- ============================================================
+            DASHBOARD
+            ============================================================ -->
+            <div id="page-dashboard" class="page-section active">
+                <div class="welcome-card">
+                    <div>
+                        <h2 id="welcomeMessage">👋 Olá, Administrador!</h2>
+                        <p id="todayDate">Bem-vindo ao KanawaSoft ERP</p>
+                    </div>
+                    <button onclick="refreshData()" class="btn-outline-light">🔄 Atualizar</button>
+                </div>
+
+                <div class="stat-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Vendas Totais</span>
+                            <div class="stat-icon blue"><i class="fas fa-shopping-cart"></i></div>
+                        </div>
+                        <div class="stat-value" id="totalSales">AOA 0</div>
+                        <span class="stat-change positive" id="salesGrowth">↑ 0%</span>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Pedidos</span>
+                            <div class="stat-icon green"><i class="fas fa-file-invoice"></i></div>
+                        </div>
+                        <div class="stat-value" id="totalOrders">0</div>
+                        <span class="stat-change positive" id="ordersGrowth">↑ 0%</span>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Clientes</span>
+                            <div class="stat-icon purple"><i class="fas fa-users"></i></div>
+                        </div>
+                        <div class="stat-value" id="totalClients">0</div>
+                        <span class="stat-change positive" id="clientsGrowth">↑ 0%</span>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Produtos</span>
+                            <div class="stat-icon yellow"><i class="fas fa-boxes"></i></div>
+                        </div>
+                        <div class="stat-value" id="totalProducts">0</div>
+                        <span class="stat-change" id="productsGrowth">📦</span>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div>
+                        <div class="chart-container">
+                            <h3><i class="fas fa-chart-area"></i> Evolução de Vendas</h3>
+                            <div style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap;">
+                                <button onclick="updateChart('mensal')" class="btn-sm btn-primary">Mensal</button>
+                                <button onclick="updateChart('semanal')" class="btn-sm btn-secondary">Semanal</button>
+                                <button onclick="updateChart('anual')" class="btn-sm btn-secondary">Anual</button>
+                            </div>
+                            <canvas id="salesChart" height="180"></canvas>
+                        </div>
+                        <div class="card">
+                            <h3 style="font-size:0.9rem; font-weight:600; margin-bottom:12px;">🏆 Top 5 Produtos</h3>
+                            <div class="table-container" style="box-shadow:none; padding:0;">
+                                <table>
+                                    <thead><tr><th>Produto</th><th>Quantidade</th><th>Faturamento</th></tr></thead>
+                                    <tbody id="topProductsList">
+                                        <tr><td colspan="3" style="text-align:center;color:var(--text-muted);">Carregando...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="chart-container">
+                            <h3><i class="fas fa-chart-pie"></i> Vendas por Categoria</h3>
+                            <canvas id="categoryChart" height="180"></canvas>
+                        </div>
+                        <div class="card">
+                            <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:12px;">📊 Status do Estoque</h3>
+                            <div id="stockStatus"></div>
+                        </div>
+                        <div class="card">
+                            <h3 style="font-size:0.9rem;font-weight:600;margin-bottom:12px;">🕐 Atividades Recentes</h3>
+                            <div id="recentActivities"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            PDV
+            ============================================================ -->
+            <div id="page-pdv" class="page-section">
+                <h2 style="font-size:1.2rem; font-weight:700; margin-bottom:16px;">🛒 Ponto de Venda</h2>
+                <div class="pdv-grid">
+                    <div>
+                        <div class="pdv-search">
+                            <input type="text" id="pdvSearch" placeholder="🔍 Buscar produto..." oninput="searchProducts(this.value)" />
+                        </div>
+                        <div id="pdvProducts" class="pdv-products-grid">
+                            <div class="loading">Carregando produtos...</div>
+                        </div>
+                    </div>
+                    <div class="cart-container">
+                        <div class="cart-header">
+                            <h3>🛒 Carrinho</h3>
+                            <span id="cartItemCount">0 itens</span>
+                        </div>
+                        <div id="cartItems" class="cart-items">
+                            <div class="empty-cart">Carrinho vazio</div>
+                        </div>
+                        <div class="cart-total">
+                            <span>Total:</span>
+                            <span class="total-value" id="cartTotal">AOA 0.00</span>
+                        </div>
+                        <div class="cart-actions">
+                            <button onclick="clearCart()" class="btn btn-danger">🗑️ Limpar</button>
+                            <button onclick="finalizeSale()" class="btn btn-success">✅ Pagar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            PRODUTOS
+            ============================================================ -->
+            <div id="page-produtos" class="page-section">
+                <div class="page-header">
+                    <h2>📦 Produtos</h2>
+                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                        <button onclick="openProductModal()" class="btn-sm btn-success">➕ Novo</button>
+                        <button onclick="exportarProdutos()" class="btn-sm btn-secondary">📤 Exportar</button>
+                        <button onclick="importarProdutos()" class="btn-sm btn-secondary">📥 Importar</button>
+                    </div>
+                </div>
+                <div id="productsList" class="products-grid"></div>
+            </div>
+
+            <!-- ============================================================
+            CLIENTES
+            ============================================================ -->
+            <div id="page-clientes" class="page-section">
+                <div class="page-header">
+                    <h2>👤 Clientes</h2>
+                    <button onclick="openClientModal()" class="btn-sm btn-success">➕ Novo</button>
+                </div>
+                <div id="clientsList" class="clients-grid"></div>
+            </div>
+
+            <!-- ============================================================
+            VENDAS
+            ============================================================ -->
+            <div id="page-vendas" class="page-section">
+                <h2>📋 Pedidos de Venda</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Nº Pedido</th><th>Cliente</th><th>Data</th><th>Total</th><th>Status</th><th>Ações</th></tr>
+                        </thead>
+                        <tbody id="vendasList">
+                            <tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text-muted);">Nenhuma venda registrada</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            ORÇAMENTOS
+            ============================================================ -->
+            <div id="page-orcamentos" class="page-section">
+                <div class="page-header">
+                    <h2>📄 Orçamentos</h2>
+                    <button onclick="openBudgetModal()" class="btn-sm btn-success">➕ Novo</button>
+                </div>
+                <div id="budgetsList" class="budgets-grid"></div>
+            </div>
+
+            <!-- ============================================================
+            NOTAS FISCAIS
+            ============================================================ -->
+            <div id="page-notas-fiscais" class="page-section">
+                <h2>📄 Notas Fiscais</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Nº NF</th><th>Cliente</th><th>Data</th><th>Total</th><th>Status</th></tr>
+                        </thead>
+                        <tbody id="nfList">
+                            <tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text-muted);">Nenhuma nota fiscal emitida</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            DEVOLUÇÕES
+            ============================================================ -->
+            <div id="page-devolucoes" class="page-section">
+                <h2>🔄 Devoluções</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Nº Devolução</th><th>Cliente</th><th>Data</th><th>Valor</th><th>Status</th></tr>
+                        </thead>
+                        <tbody id="devolucoesList">
+                            <tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text-muted);">Nenhuma devolução registrada</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            FORNECEDORES
+            ============================================================ -->
+            <div id="page-fornecedores" class="page-section">
+                <div class="page-header">
+                    <h2>🏢 Fornecedores</h2>
+                    <button onclick="openFornecedorModal()" class="btn-sm btn-success">➕ Novo</button>
+                </div>
+                <div id="fornecedoresList" class="fornecedores-grid"></div>
+            </div>
+
+            <!-- ============================================================
+            COMPRAS
+            ============================================================ -->
+            <div id="page-compras" class="page-section">
+                <div class="page-header">
+                    <h2>🛒 Pedidos de Compra</h2>
+                    <button onclick="openPedidoCompraModal()" class="btn-sm btn-success">➕ Novo</button>
+                </div>
+                <div id="pedidosCompraList" class="pedidos-compra-grid"></div>
+            </div>
+
+            <!-- ============================================================
+            MOVIMENTAÇÕES
+            ============================================================ -->
+            <div id="page-movimentacoes" class="page-section">
+                <div class="page-header">
+                    <h2>📊 Movimentações de Estoque</h2>
+                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                        <button onclick="exportarMovimentacoes()" class="btn-sm btn-secondary">📤 Exportar</button>
+                        <button onclick="filtrarMovimentacoes()" class="btn-sm btn-secondary">🔍 Filtrar</button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Produto</th><th>Tipo</th><th>Quantidade</th><th>Data</th><th>Motivo</th><th>Usuário</th></tr>
+                        </thead>
+                        <tbody id="movimentacoesList">
+                            <tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text-muted);">Nenhuma movimentação registrada</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            TRANSFERÊNCIAS
+            ============================================================ -->
+            <div id="page-transferencias" class="page-section">
+                <h2>🔄 Transferências de Estoque</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Produto</th><th>Origem</th><th>Destino</th><th>Quantidade</th><th>Data</th></tr>
+                        </thead>
+                        <tbody id="transferenciasList">
+                            <tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text-muted);">Nenhuma transferência registrada</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            CATEGORIAS
+            ============================================================ -->
+            <div id="page-categorias" class="page-section">
+                <div class="page-header">
+                    <h2>🏷️ Categorias</h2>
+                    <button onclick="openCategoriaModal()" class="btn-sm btn-success">➕ Nova</button>
+                </div>
+                <div id="categoriesGrid" class="categories-grid"></div>
+            </div>
+
+            <!-- ============================================================
+            FINANCEIRO
+            ============================================================ -->
+            <div id="page-financeiro" class="page-section">
+                <h2>💰 Contas a Pagar / Receber</h2>
+                <div class="financeiro-stats">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Contas a Receber</span>
+                            <div class="stat-icon green"><i class="fas fa-hand-holding-usd"></i></div>
+                        </div>
+                        <div class="stat-value" id="totalReceber">AOA 0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Contas a Pagar</span>
+                            <div class="stat-icon red"><i class="fas fa-hand-holding-heart"></i></div>
+                        </div>
+                        <div class="stat-value" id="totalPagar">AOA 0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Saldo</span>
+                            <div class="stat-icon blue"><i class="fas fa-wallet"></i></div>
+                        </div>
+                        <div class="stat-value" id="saldoFinanceiro">AOA 0</div>
+                    </div>
+                </div>
+                <div class="page-header">
+                    <button onclick="openContaModal()" class="btn-sm btn-success">➕ Nova Conta</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Tipo</th><th>Descrição</th><th>Valor</th><th>Vencimento</th><th>Status</th><th>Ações</th></tr>
+                        </thead>
+                        <tbody id="contasList">
+                            <tr><td colspan="6" style="text-align:center;padding:20px;color:var(--text-muted);">Nenhuma conta registrada</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            CAIXA
+            ============================================================ -->
+            <div id="page-caixa" class="page-section">
+                <h2>🏦 Caixa / Bancos</h2>
+                <div class="financeiro-stats">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Saldo em Caixa</span>
+                            <div class="stat-icon yellow"><i class="fas fa-money-bill-wave"></i></div>
+                        </div>
+                        <div class="stat-value" id="saldoCaixa">AOA 0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <span class="stat-title">Saldo Bancário</span>
+                            <div class="stat-icon blue"><i class="fas fa-university"></i></div>
+                        </div>
+                        <div class="stat-value" id="saldoBancario">AOA 0</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h4>Movimentações Recentes</h4>
+                    <div id="movimentacoesCaixa"></div>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            FLUXO DE CAIXA
+            ============================================================ -->
+            <div id="page-fluxo-caixa" class="page-section">
+                <div class="page-header">
+                    <h2>📊 Fluxo de Caixa</h2>
+                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                        <button onclick="gerarFluxoCaixa('mensal')" class="btn-sm btn-primary">Mensal</button>
+                        <button onclick="gerarFluxoCaixa('semanal')" class="btn-sm btn-secondary">Semanal</button>
+                        <button onclick="gerarFluxoCaixa('anual')" class="btn-sm btn-secondary">Anual</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <canvas id="cashFlowChart" height="200"></canvas>
+                </div>
+                <div class="card" id="fluxoResumo">
+                    <h4>Resumo do Período</h4>
+                    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px;">
+                        <div style="background:#d1fae5;padding:16px;border-radius:12px;text-align:center;">
+                            <div style="font-size:0.7rem;color:#64748b;">Entradas</div>
+                            <div style="font-size:1.2rem;font-weight:700;color:#059669;" id="fluxoEntradas">AOA 0</div>
+                        </div>
+                        <div style="background:#fee2e2;padding:16px;border-radius:12px;text-align:center;">
+                            <div style="font-size:0.7rem;color:#64748b;">Saídas</div>
+                            <div style="font-size:1.2rem;font-weight:700;color:#dc2626;" id="fluxoSaidas">AOA 0</div>
+                        </div>
+                        <div style="background:#dbeafe;padding:16px;border-radius:12px;text-align:center;">
+                            <div style="font-size:0.7rem;color:#64748b;">Saldo</div>
+                            <div style="font-size:1.2rem;font-weight:700;color:#2563eb;" id="fluxoSaldo">AOA 0</div>
+                        </div>
+                        <div style="background:#fef3c7;padding:16px;border-radius:12px;text-align:center;">
+                            <div style="font-size:0.7rem;color:#64748b;">Pendentes</div>
+                            <div style="font-size:1.2rem;font-weight:700;color:#d97706;" id="fluxoPendentes">AOA 0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            RH - FUNCIONÁRIOS
+            ============================================================ -->
+            <div id="page-rh" class="page-section">
+                <div class="page-header">
+                    <h2>👤 Funcionários</h2>
+                    <button onclick="openFuncionarioModal()" class="btn-sm btn-success">➕ Novo</button>
+                </div>
+                <div id="funcionariosList" class="funcionarios-grid"></div>
+            </div>
+
+            <!-- ============================================================
+            PONTO ELETRÔNICO
+            ============================================================ -->
+            <div id="page-ponto" class="page-section">
+                <h2>⏱️ Ponto Eletrônico</h2>
+                <div class="card">
+                    <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+                        <select id="pontoFuncionario" style="padding:8px 12px; border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--bg);">
+                            <option value="">Selecione um funcionário</option>
+                        </select>
+                        <button onclick="registrarPonto(document.getElementById('pontoFuncionario').value)" class="btn-sm btn-success">⏱️ Registrar Ponto</button>
+                        <button onclick="calcularFolhaPagamento(new Date().getMonth(), new Date().getFullYear())" class="btn-sm btn-primary">📊 Calcular Folha</button>
+                    </div>
+                    <div id="folhaPagamentoResultado" style="margin-top:16px;display:none;"></div>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Funcionário</th><th>Data</th><th>Hora</th><th>Tipo</th></tr>
+                        </thead>
+                        <tbody id="pontosList">
+                            <tr><td colspan="4" style="text-align:center;padding:20px;color:var(--text-muted);">Nenhum ponto registrado</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            PROJETOS
+            ============================================================ -->
+            <div id="page-projetos" class="page-section">
+                <div class="page-header">
+                    <h2>📊 Projetos</h2>
+                    <button onclick="openProjetoModal()" class="btn-sm btn-success">➕ Novo</button>
+                </div>
+                <div id="projetosList" class="projetos-grid"></div>
+            </div>
+
+            <!-- ============================================================
+            CRM - ATENDIMENTOS
+            ============================================================ -->
+            <div id="page-crm" class="page-section">
+                <div class="page-header">
+                    <h2>🎯 Atendimentos</h2>
+                    <button onclick="openAtendimentoModal()" class="btn-sm btn-success">➕ Novo</button>
+                </div>
+                <div id="atendimentosList" class="atendimentos-grid"></div>
+            </div>
+
+            <!-- ============================================================
+            LOGÍSTICA - TRANSPORTADORAS
+            ============================================================ -->
+            <div id="page-logistica" class="page-section">
+                <div class="page-header">
+                    <h2>🚚 Transportadoras</h2>
+                    <button onclick="openTransportadoraModal()" class="btn-sm btn-success">➕ Nova</button>
+                </div>
+                <div id="transportadorasList" class="transportadoras-grid"></div>
+            </div>
+
+            <!-- ============================================================
+            ENTREGAS
+            ============================================================ -->
+            <div id="page-entregas" class="page-section">
+                <h2>📦 Entregas</h2>
+                <div id="entregasList" class="entregas-grid"></div>
+            </div>
+
+            <!-- ============================================================
+            MARKETING
+            ============================================================ -->
+            <div id="page-marketing" class="page-section">
+                <div class="page-header">
+                    <h2>📢 Campanhas</h2>
+                    <button onclick="openCampanhaModal()" class="btn-sm btn-success">➕ Nova</button>
+                </div>
+                <div id="marketingList" class="campanhas-grid"></div>
+            </div>
+
+            <!-- ============================================================
+            MULTILOJA
+            ============================================================ -->
+            <div id="page-multiloja" class="page-section">
+                <div class="page-header">
+                    <h2>🏪 Filiais</h2>
+                    <button onclick="openFilialModal()" class="btn-sm btn-success">➕ Nova</button>
+                </div>
+                <div id="filiaisList" class="filiais-grid"></div>
+            </div>
+
+            <!-- ============================================================
+            RELATÓRIOS
+            ============================================================ -->
+            <div id="page-relatorios" class="page-section">
+                <h2>📊 Relatórios Gerenciais</h2>
+                <div class="relatorios-grid">
+                    <div class="card" onclick="gerarRelatorio('vendas')">
+                        <i class="fas fa-chart-line" style="font-size:2rem;color:var(--info);"></i>
+                        <h4>Relatório de Vendas</h4>
+                        <p>Análise completa de vendas</p>
+                    </div>
+                    <div class="card" onclick="gerarRelatorio('estoque')">
+                        <i class="fas fa-boxes" style="font-size:2rem;color:var(--success);"></i>
+                        <h4>Relatório de Estoque</h4>
+                        <p>Giro e produtos em falta</p>
+                    </div>
+                    <div class="card" onclick="gerarRelatorio('financeiro')">
+                        <i class="fas fa-coins" style="font-size:2rem;color:var(--warning);"></i>
+                        <h4>Relatório Financeiro</h4>
+                        <p>DRE e fluxo de caixa</p>
+                    </div>
+                    <div class="card" onclick="gerarRelatorio('clientes')">
+                        <i class="fas fa-users" style="font-size:2rem;color:var(--purple);"></i>
+                        <h4>Relatório de Clientes</h4>
+                        <p>Análise de clientes</p>
+                    </div>
+                    <div class="card" onclick="gerarRelatorio('rh')">
+                        <i class="fas fa-users-cog" style="font-size:2rem;color:var(--pink);"></i>
+                        <h4>Relatório RH</h4>
+                        <p>Folha e desempenho</p>
+                    </div>
+                    <div class="card" onclick="gerarRelatorio('projetos')">
+                        <i class="fas fa-tasks" style="font-size:2rem;color:var(--primary);"></i>
+                        <h4>Relatório de Projetos</h4>
+                        <p>Progresso e custos</p>
+                    </div>
+                </div>
+                <div id="relatorioResultado" class="card" style="display:none;"></div>
+            </div>
+
+            <!-- ============================================================
+            CONFIG EMPRESA
+            ============================================================ -->
+            <div id="page-config-empresa" class="page-section">
+                <h2>⚙️ Configurações da Empresa</h2>
+                <div class="card">
+                    <div class="form-grid">
+                        <div>
+                            <label>Nome da Empresa</label>
+                            <input type="text" id="editCompanyName" />
+                        </div>
+                        <div>
+                            <label>NIF</label>
+                            <input type="text" id="editCompanyNif" />
+                        </div>
+                        <div>
+                            <label>Email</label>
+                            <input type="email" id="editCompanyEmail" />
+                        </div>
+                        <div>
+                            <label>Telefone</label>
+                            <input type="tel" id="editCompanyPhone" />
+                        </div>
+                        <div>
+                            <label>Endereço</label>
+                            <input type="text" id="editCompanyAddress" />
+                        </div>
+                        <div>
+                            <label>Moeda</label>
+                            <select id="editCompanyCurrency">
+                                <option value="AOA">AOA - Kwanza</option>
+                                <option value="USD">USD - Dólar</option>
+                                <option value="EUR">EUR - Euro</option>
+                            </select>
+                        </div>
+                        <div style="grid-column:span 2;">
+                            <label>Garantia Padrão</label>
+                            <textarea id="editCompanyGuarantee" rows="2"></textarea>
+                        </div>
+                    </div>
+                    <button onclick="saveCompanySettings()" class="btn-sm btn-success" style="margin-top:16px;">💾 Salvar</button>
+                </div>
+            </div>
+
+            <!-- ============================================================
+            PERFIS USUÁRIOS
+            ============================================================ -->
+            <div id="page-perfis-usuarios" class="page-section">
+                <div class="page-header">
+                    <h2>👤 Perfis de Usuários</h2>
+                    <button onclick="openUserModal()" class="btn-sm btn-success">➕ Novo</button>
+                </div>
+                <div id="usersList" class="users-grid"></div>
+            </div>
+
+            <!-- ============================================================
+            DATABASE
+            ============================================================ -->
+            <div id="page-database" class="page-section">
+                <h2>🗄️ Gerenciamento do Banco</h2>
+                <div class="card">
+                    <h3>📊 Estatísticas</h3>
+                    <div class="db-stats-grid" id="dbStats"></div>
+                </div>
+                <div class="card">
+                    <h3>🛠️ Ações</h3>
+                    <div class="db-actions">
+                        <button onclick="exportDatabase()" class="btn btn-primary">📤 Exportar</button>
+                        <button onclick="importDatabase()" class="btn btn-warning">📥 Importar</button>
+                        <button onclick="resetDatabase()" class="btn btn-danger">🗑️ Resetar</button>
+                        <button onclick="backupDatabase()" class="btn btn-success">💾 Backup</button>
+                        <button onclick="restoreBackup()" class="btn btn-secondary">↩️ Restaurar</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>📋 Log de Atividades</h3>
+                    <div id="activityLog"></div>
+                </div>
+            </div>
+
+        </div>
+
+        <footer class="app-footer">
+            <p>© 2024 KanawaSoft ERP. Todos os direitos reservados.</p>
+        </footer>
+
+    </div>
+
+    <!-- ============================================================
+    MODALS
+    ============================================================ -->
+
+    <!-- Product Modal -->
+    <div class="modal-overlay" id="productModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="productModalTitle">📦 Novo Produto</h3>
+                <button class="modal-close" onclick="closeModal('productModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Nome *</label>
+                    <input type="text" id="productName" required />
+                </div>
+                <div class="form-group">
+                    <label>Código *</label>
+                    <input type="text" id="productCode" required />
+                </div>
+                <div class="form-group">
+                    <label>Preço</label>
+                    <input type="number" id="productPrice" step="0.01" />
+                </div>
+                <div class="form-group">
+                    <label>Custo</label>
+                    <input type="number" id="productCost" step="0.01" />
+                </div>
+                <div class="form-group">
+                    <label>Estoque</label>
+                    <input type="number" id="productStock" />
+                </div>
+                <div class="form-group">
+                    <label>Estoque Mínimo</label>
+                    <input type="number" id="productMinStock" value="5" />
+                </div>
+                <div class="form-group">
+                    <label>Categoria</label>
+                    <select id="productCategory"></select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('productModal')">Cancelar</button>
+                <button class="btn btn-success" onclick="saveProduct()">💾 Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Client Modal -->
+    <div class="modal-overlay" id="clientModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>👤 Novo Cliente</h3>
+                <button class="modal-close" onclick="closeModal('clientModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Nome *</label>
+                    <input type="text" id="clientName" required />
+                </div>
+                <div class="form-group">
+                    <label>NIF</label>
+                    <input type="text" id="clientNif" />
+                </div>
+                <div class="form-group">
+                    <label>Telefone</label>
+                    <input type="tel" id="clientPhone" />
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="clientEmail" />
+                </div>
+                <div class="form-group">
+                    <label>Endereço</label>
+                    <input type="text" id="clientAddress" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('clientModal')">Cancelar</button>
+                <button class="btn btn-success" onclick="saveClient()">💾 Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal-overlay" id="paymentModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>💳 Finalizar Venda</h3>
+                <button class="modal-close" onclick="closeModal('paymentModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="payment-total">
+                    <span>Total:</span>
+                    <span id="paymentTotal">AOA 0.00</span>
+                </div>
+                <div class="form-group">
+                    <label>Forma de Pagamento</label>
+                    <select id="paymentMethodSelect">
+                        <option value="Dinheiro">💰 Dinheiro</option>
+                        <option value="Cartão">💳 Cartão</option>
+                        <option value="Transferência">🏦 Transferência</option>
+                        <option value="Multicaixa">🏧 Multicaixa</option>
+                        <option value="Pix">📱 Pix</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Valor Recebido</label>
+                    <input type="number" id="paymentReceived" step="0.01" oninput="calculateChange()" />
+                </div>
+                <div class="payment-change">
+                    <span>Troco:</span>
+                    <span id="paymentChange">AOA 0.00</span>
+                </div>
+                <div class="form-group">
+                    <label>Cliente</label>
+                    <select id="paymentClient">
+                        <option value="">Consumidor Final</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('paymentModal')">Cancelar</button>
+                <button class="btn btn-success" onclick="confirmPayment()">✅ Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Budget Modal -->
+    <div class="modal-overlay" id="budgetModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="budgetModalTitle">📄 Novo Orçamento</h3>
+                <button class="modal-close" onclick="closeModal('budgetModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Cliente</label>
+                    <input type="text" id="budgetClient" />
+                </div>
+                <div class="form-group">
+                    <label>Descrição</label>
+                    <textarea id="budgetDescription" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Valor</label>
+                    <input type="number" id="budgetValue" step="0.01" />
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="budgetStatus">
+                        <option value="Pendente">⏳ Pendente</option>
+                        <option value="Aprovado">✅ Aprovado</option>
+                        <option value="Rejeitado">❌ Rejeitado</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('budgetModal')">Cancelar</button>
+                <button class="btn btn-success" onclick="saveBudget()">💾 Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conta Modal -->
+    <div class="modal-overlay" id="contaModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="contaModalTitle">💰 Nova Conta</h3>
+                <button class="modal-close" onclick="closeModal('contaModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Tipo</label>
+                    <select id="contaTipo">
+                        <option value="receber">💰 Receber</option>
+                        <option value="pagar">💸 Pagar</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Descrição</label>
+                    <input type="text" id="contaDescricao" required />
+                </div>
+                <div class="form-group">
+                    <label>Valor</label>
+                    <input type="number" id="contaValor" step="0.01" required />
+                </div>
+                <div class="form-group">
+                    <label>Data de Vencimento</label>
+                    <input type="date" id="contaVencimento" required />
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="contaStatus">
+                        <option value="Pendente">⏳ Pendente</option>
+                        <option value="Pago">✅ Pago</option>
+                        <option value="Cancelado">❌ Cancelado</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('contaModal')">Cancelar</button>
+                <button class="btn btn-success" onclick="saveConta()">💾 Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Categoria Modal -->
+    <div class="modal-overlay" id="categoriaModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="categoriaModalTitle">🏷️ Nova Categoria</h3>
+                <button class="modal-close" onclick="closeModal('categoriaModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Nome *</label>
+                    <input type="text" id="categoriaNome" required />
+                </div>
+                <div class="form-group">
+                    <label>Descrição</label>
+                    <textarea id="categoriaDescricao" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Ícone (Font Awesome)</label>
+                    <input type="text" id="categoriaIcone" value="fa-tag" />
+                </div>
+                <div class="form-group">
+                    <label>Cor</label>
+                    <input type="color" id="categoriaCor" value="#1a3a5c" />
+                </div>
+                <div class="form-group">
+                    <label>Categoria Pai</label>
+                    <select id="categoriaPai">
+                        <option value="">Nenhuma (Raiz)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('categoriaModal')">Cancelar</button>
+                <button class="btn btn-success" onclick="saveCategoria()">💾 Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Modal -->
+    <div class="modal-overlay" id="userModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="userModalTitle">👤 Novo Usuário</h3>
+                <button class="modal-close" onclick="closeModal('userModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Nome *</label>
+                    <input type="text" id="userName" required />
+                </div>
+                <div class="form-group">
+                    <label>Email *</label>
+                    <input type="email" id="userEmail" required />
+                </div>
+                <div class="form-group">
+                    <label>Senha</label>
+                    <input type="password" id="userPassword" placeholder="Deixe em branco para manter" />
+                </div>
+                <div class="form-group">
+                    <label>Perfil</label>
+                    <select id="userRole">
+                        <option value="admin">Administrador</option>
+                        <option value="gerente">Gerente</option>
+                        <option value="vendedor">Vendedor</option>
+                        <option value="estoquista">Estoquista</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('userModal')">Cancelar</button>
+                <button class="btn btn-success" onclick="saveUser()">💾 Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fornecedor Modal -->
+    <div class="modal-overlay" id="fornecedorModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="fornecedorModalTitle">🏢 Novo Fornecedor</h3>
+                <button class="modal-close" onclick="closeModal('fornecedorModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Nome *</label>
+                    <input type="text" id="fornecedorNome" required />
+                </div>
+                <div class="form-group">
+                    <label>NIF</label>
+                    <input type="text" id="fornecedorNif" />
+                </div>
+                <div class="form-group">
+                    <label>Telefone</label>
+                    <input type="tel" id="fornecedorTelefone" />
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="fornecedorEmail" />
+                </div>
+                <div class="form-group">
+                    <label>Endereço</label>
+                    <input type="text" id="fornecedorEndereco" />
+                </div>
+                <div class="form-group">
+                    <label>Categoria</label>
+                    <input type="text" id="fornecedorCategoria" />
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="fornecedorStatus">
+                        <option value="Ativo">Ativo</option>
+                        <option value="Inativo">Inativo</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('fornecedorModal')">Cancelar</button>
+                <button class="btn btn-success" onclick="saveFornecedor()">💾 Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Compra Modal -->
+    <div class="modal-overlay" id="compraModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="compraModalTitle">🛒 Novo Pedido de Compra</h3>
+                <button class="modal-close" onclick="closeModal('compraModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Fornecedor *</label>
+                    <select id="compraFornecedor" required></select>
+                </div>
+                <div class="form-group">
+                    <label>Produtos *</label>
+                    <input type="text" id="compraProdutos" placeholder="Ex: Notebook, Mouse, Teclado" required />
+                </div>
+                <div class="form-group">
+                    <label>Quantidade</label>
+                    <input type="number" id="compraQuantidade" value="1" />
+                </div>
+                <div class="form-group">
+                    <label>Preço Unitário</label>
+                    <input type="number" id="compraPreco" step="0.01" />
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="compraStatus">
+                        <option value="Pendente">⏳ Pendente</option>
+                        <option value="Aprovado">✅ Aprovado</option>
+                        <option value="Entregue">📦 Entregue</option>
+                        <option value="Cancelado">❌ Cancelado</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('compraModal')">Cancelar</button>
+                <button class="btn btn-success" onclick="savePedidoCompra()">💾 Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Funcionario Modal -->
+    <div class="modal-overlay" id="funcionarioModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="funcionarioModalTitle">👤 Novo Funcionário</h3>
+                <button class="modal-close" onclick="closeModal('funcionarioModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Nome *</label>
+                    <input type="text" id="funcionarioNome" required />
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="funcionarioEmail" />
+                </div>
+                <div class="form-group">
+                    <label>Telefone</label>
+                    <input type="tel" id="funcionarioTelefone" />
+                </div>
+                <div class="form-group">
+                    <label>Cargo</label>
+                    <input type="text" id="funcionarioCargo" />
+                </div>
+                <div class="form-group">
+                    <label>Departamento</label>
+                    <input type="text" id="funcionarioDepartamento" />
+                </div>
+                <div class="form-group">
+                    <label>Salário</label>
+                    <input type="number" id="funcionarioSalario" step="0.01" />
+                </div>
+                <div class="form-group">
+                    <label>Data de Admissão</label>
+                    <input type="date" id="funcionarioDataAdmissao" />
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="funcionarioStatus">
+                        <option value="Ativo">Ativo</option>
+                        <option value="Férias">Férias</option>
+                        <option value="Licença">Licença</option>
+                        <option value="Desligado">Desligado</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('funcionarioModal')">Cancelar</button>
+                <button class="btn btn-success" onclick="saveFuncionario()">💾 Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Projeto Modal -->
+    <div class="modal-overlay" id="projetoModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="projetoModalTitle">📊 Novo Projeto</h3>
+                <button class="modal-close" onclick="closeModal('projetoModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Nome *</label>
+                    <input type="text" id="projetoNome" required />
+                </div>
+                <div class="form-group">
+                    <label>Cliente</label>
+                    <input type="text" id="projetoCliente" />
+                </div>
+                <div class="form-group">
+                    <label>Descrição</label>
+                    <textarea id="projetoDescricao" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="projetoStatus">
+                        <option value="Planejamento">📋 Planejamento</option>
+                        <option value="Em Andamento">🚀 Em Andamento</option>
+                        <option value="Concluído">✅ Concluído</option>
+                        <option value="Cancelado">❌ Cancelado</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Progresso (%)</label>
+                    <input type="number" id="projetoProgresso" min="0" max="100" value="0" />
+                </div>
+                <div class="form-group">
+                    <label>Data de Início</label>
+                    <input type="date" id="projetoDataInicio" />
+                </div>
+                <div class="form-group">
+                    <label>Data de Fim</label>
+                    <input type="date" id="projetoDataFim" />
+                </div>
+                <div class="form-group">
+                    <label>Valor</label>
+                    <input type="number" id="projetoValor" step="0.01" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('projetoModal')">Cancelar</button>
+                <button class="btn btn-success" onclick="saveProjeto()">💾 Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Atendimento Modal -->
+    <div class="modal-overlay" id="atendimentoModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="atendimentoModalTitle">🎯 Novo Atendimento</h3>
+                <button class="modal-close" onclick="closeModal('atendimentoModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Cliente *</label>
+                    <select id="atendimentoCliente" required></select>
+                </div>
+                <div class="form-group">
+                    <label>Assunto *</label>
+                    <input type="text" id="atendimentoAssunto" required />
+                </div>
+                <div class="form-group">
+                    <label>Descrição</label>
+                    <textarea id="atendimentoDescricao" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="atendimentoStatus">
+                        <option value="Aberto">🟢 Aberto</option>
+                        <option value="Em Andamento">🔄 Em Andamento</option>
+                        <option value="Resolvido">✅ Resolvido</option>
+                        <option value="Fechado">🔒 Fechado</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Prioridade</label>
+                    <select id="atendimentoPrioridade">
+                        <option value="Baixa">🟢 Baixa</option>
+                        <option value="Média" selected>🟡 Média</option>
+                        <option value="Alta">🔴 Alta</option>
+                        <option value="Urgente">🆘 Urgente</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('atendimentoModal')">Cancelar</button>
+                <button class="btn btn-success" onclick="saveAtendimento()">💾 Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transportadora Modal -->
+    <div class="modal-overlay" id="transportadoraModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="transportadoraModalTitle">🚚 Nova Transportadora</h3>
+                <button class="modal-close" onclick="closeModal('transportadoraModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Nome *</label>
+                    <input type="text" id="transportadoraNome" required />
+                </div>
+                <div class="form-group">
+                    <label>CNPJ</label>
+                    <input type="text" id="transportadoraCnpj" />
+                </div>
+                <div class="form-group">
+                    <label>Telefone</label>
+                    <input type="tel" id="transportadoraTelefone" />
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="transportadoraEmail" />
+                </div>
+                <div class="form-group">
+                    <label>Endereço</label>
+                    <input type="text" id="transportadoraEndereco" />
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="transportadoraStatus">
+                        <option value="Ativo">Ativo</option>
+                        <option value="Inativo">Inativo</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('transportadoraModal')">Cancelar</button>
+                <button class="btn btn-success" onclick="saveTransportadora()">💾 Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Campanha Modal -->
+    <div class="modal-overlay" id="campanhaModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="campanhaModalTitle">📢 Nova Campanha</h3>
+                <button class="modal-close" onclick="closeModal('campanhaModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Nome *</label>
+                    <input type="text" id="campanhaNome" required />
+                </div>
+                <div class="form-group">
+                    <label>Descrição</label>
+                    <textarea id="campanhaDescricao" rows="2"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Orçamento</label>
+                    <input type="number" id="campanhaOrcamento" step="0.01" />
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="campanhaStatus">
+                        <option value="Planejada">📋 Planejada</option>
+                        <option value="Em Andamento">🚀 Em Andamento</option>
+                        <option value="Concluída">✅ Concluída</option>
+                        <option value="Cancelada">❌ Cancelada</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Data de Início</label>
+                    <input type="date" id="campanhaDataInicio" />
+                </div>
+                <div class="form-group">
+                    <label>Data de Fim</label>
+                    <input type="date" id="campanhaDataFim" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('campanhaModal')">Cancelar</button>
+                <button class="btn btn-success" onclick="saveCampanha()">💾 Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filial Modal -->
+    <div class="modal-overlay" id="filialModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 id="filialModalTitle">🏪 Nova Filial</h3>
+                <button class="modal-close" onclick="closeModal('filialModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Nome *</label>
+                    <input type="text" id="filialNome" required />
+                </div>
+                <div class="form-group">
+                    <label>Endereço</label>
+                    <input type="text" id="filialEndereco" />
+                </div>
+                <div class="form-group">
+                    <label>Telefone</label>
+                    <input type="tel" id="filialTelefone" />
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="filialEmail" />
+                </div>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="filialStatus">
+                        <option value="Ativa">🟢 Ativa</option>
+                        <option value="Inativa">🔴 Inativa</option>
+                        <option value="Manutenção">🟡 Manutenção</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('filialModal')">Cancelar</button>
+                <button class="btn btn-success" onclick="saveFilial()">💾 Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Print Modal -->
+    <div class="modal-overlay" id="printModal">
+        <div class="modal" style="max-width: 480px;">
+            <div class="modal-header">
+                <h3>🖨️ Recibo</h3>
+                <button class="modal-close" onclick="closeModal('printModal')">✕</button>
+            </div>
+            <div id="printContent" style="padding:20px;"></div>
+            <div class="modal-footer">
+                <button onclick="printNow()" class="btn btn-primary">🖨️ Imprimir</button>
+                <button onclick="downloadReceipt()" class="btn btn-secondary">📄 Baixar</button>
+                <button onclick="closeModal('printModal')" class="btn btn-secondary">❌ Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    TOAST
+    ============================================================ -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ============================================================
+    SCRIPTS
+    ============================================================ -->
+    <script src="/js/database.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/estoque.js"></script>
+    <script src="/js/financeiro.js"></script>
+    <script src="/js/dashboard.js"></script>
+    <script src="/js/notificacoes.js"></script>
+    <script src="/js/backup.js"></script>
+    <script src="/js/app.js"></script>
+
+    <!-- Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('✅ Service Worker registrado:', reg.scope))
+                    .catch(err => console.log('❌ Service Worker falhou:', err));
+            });
+        }
+
+        // ============================================================
+        // INICIALIZAÇÃO DAS FUNÇÕES GLOBAIS PARA OS MODAIS
+        // ============================================================
+        // Essas funções são definidas no app.js, mas precisam estar acessíveis globalmente
+        window.closeModal = function(id) {
+            document.getElementById(id).classList.remove('active');
+        };
+
+        window.openModal = function(id) {
+            document.getElementById(id).classList.add('active');
+        };
+
+        // Funções para os modais (serão implementadas no app.js)
+        window.saveProduct = function() { console.log('saveProduct'); };
+        window.saveClient = function() { console.log('saveClient'); };
+        window.saveBudget = function() { console.log('saveBudget'); };
+        window.saveConta = function() { console.log('saveConta'); };
+        window.saveCategoria = function() { console.log('saveCategoria'); };
+        window.saveUser = function() { console.log('saveUser'); };
+        window.saveFornecedor = function() { console.log('saveFornecedor'); };
+        window.savePedidoCompra = function() { console.log('savePedidoCompra'); };
+        window.saveFuncionario = function() { console.log('saveFuncionario'); };
+        window.saveProjeto = function() { console.log('saveProjeto'); };
+        window.saveAtendimento = function() { console.log('saveAtendimento'); };
+        window.saveTransportadora = function() { console.log('saveTransportadora'); };
+        window.saveCampanha = function() { console.log('saveCampanha'); };
+        window.saveFilial = function() { console.log('saveFilial'); };
+        window.confirmPayment = function() { console.log('confirmPayment'); };
+        window.calculateChange = function() { console.log('calculateChange'); };
+        window.printNow = function() { console.log('printNow'); };
+        window.downloadReceipt = function() { console.log('downloadReceipt'); };
+        window.toggleNotificacoes = function() { console.log('toggleNotificacoes'); };
+        window.clearNotifications = function() { console.log('clearNotifications'); };
+        window.toggleTheme = function() { console.log('toggleTheme'); };
+        window.syncNow = function() { console.log('syncNow'); };
+        window.logout = function() { console.log('logout'); };
+        window.refreshData = function() { console.log('refreshData'); };
+        window.navigateTo = function(page) { console.log('navigateTo', page); };
+        window.toggleSidenav = function() { console.log('toggleSidenav'); };
+        window.exportDatabase = function() { console.log('exportDatabase'); };
+        window.importDatabase = function() { console.log('importDatabase'); };
+        window.resetDatabase = function() { console.log('resetDatabase'); };
+        window.backupDatabase = function() { console.log('backupDatabase'); };
+        window.restoreBackup = function() { console.log('restoreBackup'); };
+        window.gerarRelatorio = function(tipo) { console.log('gerarRelatorio', tipo); };
+        window.gerarFluxoCaixa = function(periodo) { console.log('gerarFluxoCaixa', periodo); };
+        window.searchProducts = function(value) { console.log('searchProducts', value); };
+        window.addToCart = function(id) { console.log('addToCart', id); };
+        window.clearCart = function() { console.log('clearCart'); };
+        window.finalizeSale = function() { console.log('finalizeSale'); };
+        window.updateChart = function(period) { console.log('updateChart', period); };
+        window.exportarProdutos = function() { console.log('exportarProdutos'); };
+        window.importarProdutos = function() { console.log('importarProdutos'); };
+        window.exportarMovimentacoes = function() { console.log('exportarMovimentacoes'); };
+        window.filtrarMovimentacoes = function() { console.log('filtrarMovimentacoes'); };
+        window.calcularFolhaPagamento = function(mes, ano) { console.log('calcularFolhaPagamento', mes, ano); };
+        window.registrarPonto = function(id) { console.log('registrarPonto', id); };
+        window.saveCompanySettings = function() { console.log('saveCompanySettings'); };
+        
+        // Aberturas de modais
+        window.openProductModal = function() { openModal('productModal'); };
+        window.openClientModal = function() { openModal('clientModal'); };
+        window.openBudgetModal = function() { openModal('budgetModal'); };
+        window.openContaModal = function() { openModal('contaModal'); };
+        window.openCategoriaModal = function() { openModal('categoriaModal'); };
+        window.openUserModal = function() { openModal('userModal'); };
+        window.openFornecedorModal = function() { openModal('fornecedorModal'); };
+        window.openPedidoCompraModal = function() { openModal('compraModal'); };
+        window.openFuncionarioModal = function() { openModal('funcionarioModal'); };
+        window.openProjetoModal = function() { openModal('projetoModal'); };
+        window.openAtendimentoModal = function() { openModal('atendimentoModal'); };
+        window.openTransportadoraModal = function() { openModal('transportadoraModal'); };
+        window.openCampanhaModal = function() { openModal('campanhaModal'); };
+        window.openFilialModal = function() { openModal('filialModal'); };
+        
+        // Edições
+        window.editProduct = function(id) { console.log('editProduct', id); };
+        window.editClient = function(id) { console.log('editClient', id); };
+        window.editBudget = function(id) { console.log('editBudget', id); };
+        window.editConta = function(id) { console.log('editConta', id); };
+        window.editCategoria = function(id) { console.log('editCategoria', id); };
+        window.editUser = function(id) { console.log('editUser', id); };
+        window.editFornecedor = function(id) { console.log('editFornecedor', id); };
+        window.editFuncionario = function(id) { console.log('editFuncionario', id); };
+        window.editProjeto = function(id) { console.log('editProjeto', id); };
+        window.editAtendimento = function(id) { console.log('editAtendimento', id); };
+        window.editTransportadora = function(id) { console.log('editTransportadora', id); };
+        window.editCampanha = function(id) { console.log('editCampanha', id); };
+        window.editFilial = function(id) { console.log('editFilial', id); };
+        
+        // Deletar
+        window.deleteProduct = function(id) { console.log('deleteProduct', id); };
+        window.deleteClient = function(id) { console.log('deleteClient', id); };
+        window.deleteBudget = function(id) { console.log('deleteBudget', id); };
+        window.deleteConta = function(id) { console.log('deleteConta', id); };
+        window.deleteCategoria = function(id) { console.log('deleteCategoria', id); };
+        window.deleteUser = function(id) { console.log('deleteUser', id); };
+        window.deleteFornecedor = function(id) { console.log('deleteFornecedor', id); };
+        window.deletePedidoCompra = function(id) { console.log('deletePedidoCompra', id); };
+        window.deleteFuncionario = function(id) { console.log('deleteFuncionario', id); };
+        window.deleteProjeto = function(id) { console.log('deleteProjeto', id); };
+        window.deleteAtendimento = function(id) { console.log('deleteAtendimento', id); };
+        window.deleteTransportadora = function(id) { console.log('deleteTransportadora', id); };
+        window.deleteCampanha = function(id) { console.log('deleteCampanha', id); };
+        window.deleteFilial = function(id) { console.log('deleteFilial', id); };
+        window.deleteEntrega = function(id) { console.log('deleteEntrega', id); };
+
+        console.log('✅ index.html carregado com todos os módulos!');
+        console.log('📦 Módulos disponíveis: Dashboard, PDV, Produtos, Clientes, Vendas, Orçamentos, Notas Fiscais, Devoluções, Fornecedores, Compras, Movimentações, Transferências, Categorias, Financeiro, Caixa, Fluxo de Caixa, RH, Projetos, CRM, Logística, Marketing, Multiloja, Relatórios, Configurações, Usuários, Banco de Dados');
+    </script>
+
+</body>
+</html>

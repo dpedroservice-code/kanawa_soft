@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KanawaSoft - Offline</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0b2b4a;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            text-align: center;
+        }
+        .offline-container {
+            max-width: 400px;
+            background: rgba(255,255,255,0.05);
+            padding: 40px;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .offline-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            color: #f59e0b;
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+        p {
+            font-size: 16px;
+            opacity: 0.8;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 32px;
+            background: #10b981;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+        .btn:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+        }
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .retry-count {
+            margin-top: 16px;
+            font-size: 14px;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="offline-icon">📡</div>
+        <h1>Você está offline</h1>
+        <p>
+            Não foi possível conectar ao servidor. 
+            Verifique sua conexão com a internet e tente novamente.
+        </p>
+        <div class="btn-group">
+            <button onclick="window.location.reload()" class="btn">🔄 Tentar novamente</button>
+            <button onclick="window.history.back()" class="btn btn-secondary">⬅️ Voltar</button>
+        </div>
+        <div class="retry-count" id="retryCount">Tentando reconectar...</div>
+    </div>
+
+    <script>
+        let attempts = 0;
+        const maxAttempts = 5;
+
+        function checkOnline() {
+            if (navigator.onLine) {
+                window.location.reload();
+            } else {
+                attempts++;
+                document.getElementById('retryCount').textContent = 
+                    `Tentativa ${attempts} de ${maxAttempts}`;
+                
+                if (attempts < maxAttempts) {
+                    setTimeout(checkOnline, 3000);
+                } else {
+                    document.getElementById('retryCount').textContent = 
+                        '⚠️ Não foi possível reconectar. Verifique sua internet.';
+                }
+            }
+        }
+
+        // Verificar ao carregar
+        setTimeout(checkOnline, 2000);
+
+        // Listeners de conexão
+        window.addEventListener('online', () => {
+            window.location.reload();
+        });
+    </script>
+</body>
+</html>
